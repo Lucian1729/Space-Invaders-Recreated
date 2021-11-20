@@ -148,10 +148,11 @@ while running:
             enemyY[i] += enemyY_change[i]
         enemyRect[i] = pygame.Rect(enemyX[i], enemyY[i], 64, 64)
 
-        if movement_count % 16 == 0:
-            movement_state = not movement_state
-            movement_count = 1
         enemy(enemyX[i], enemyY[i], movement_state)
+    
+    if movement_count % 16 == 0:
+        movement_state = not movement_state
+        movement_count = 1
     movement_count += 1
 
     s = False
