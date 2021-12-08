@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 from pygame import mixer
 
 pygame.init()
@@ -16,6 +17,8 @@ backgroundImg = pygame.image.load('background.png')
 
 mixer.music.load('game_music.wav')
 mixer.music.play(-1)
+
+game_state = True
 
 playerImg = pygame.image.load('spaceship2.png')
 playerX = 368
@@ -57,19 +60,27 @@ explosion_frames = 12
 explosion_count = 13
 
 score_value = 0
-font = pygame.font.Font('game_over.ttf', 48)
+score_font = pygame.font.Font('game_over.ttf', 48)
+score_font_over = pygame.font.Font('game_over.ttf', 100)
 
 over_font = pygame.font.Font('game_over.ttf', 200)
+exit_font = pygame.font.Font('game_over.ttf', 48)
 
 
 def game_over():
     over_object = over_font.render("GAME OVER", True, (128, 0, 0))
     screen.blit(over_object, (160, 200))
+    exit_object = exit_font.render("Press ESCAPE key to exit.", True, (255, 255, 255))
+    screen.blit(exit_object, (290, 550))
 
 
 def score():
-    score_object = font.render("Score : " + str(score_value), True, (128, 0, 0))
-    screen.blit(score_object, (10, 10))
+    if game_state:
+        score_object = score_font.render("Score : " + str(score_value), True, (128, 0, 0))
+        screen.blit(score_object, (10, 10))
+    else:
+        score_object = score_font_over.render("Score : " + str(score_value), True, (255, 255, 255))
+        screen.blit(score_object, (320, 300))
 
 
 def player(x, y):
@@ -99,6 +110,8 @@ def explosion(x, y):
     screen.blit(explosionImg, (x, y))
 
 
+start_time = time.time()
+
 running = True
 while running:
     screen.blit(backgroundImg, (0, 0))
@@ -117,9 +130,14 @@ while running:
                     bullet_sound = mixer.Sound('shoot.wav')
                     bullet_sound.play()
                     last_fire_delay = fire_delay
+            if event.key == pygame.K_ESCAPE:
+                if not game_state:
+                    running = False
         if event.type == pygame.KEYUP:
             playerX_change = 0
-    fire_delay += 1
+    if game_state:
+        fire_delay += 1
+        end_time = time.time()
 
     playerX += playerX_change
     if playerX < 0:
@@ -130,6 +148,8 @@ while running:
     for i in range(enemy_number):
         if playerRect.colliderect(enemyRect[i]):
             game_over()
+
+            game_state = False
             for ene in range(enemy_number):
                 if enemyY[0] < 1000:
                     mixer.music.pause()
@@ -149,7 +169,7 @@ while running:
         enemyRect[i] = pygame.Rect(enemyX[i], enemyY[i], 64, 64)
 
         enemy(enemyX[i], enemyY[i], movement_state)
-    
+
     if movement_count % 16 == 0:
         movement_state = not movement_state
         movement_count = 1
@@ -214,3 +234,7 @@ while running:
     pygame.display.update()
 
     clock.tick(60)
+
+game_time = end_time - start_time
+print(game_time)
+print(score_value)
