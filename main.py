@@ -111,6 +111,7 @@ def explosion(x, y):
 
 
 start_time = time.time()
+end_time = start_time
 
 running = True
 while running:
