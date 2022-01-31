@@ -15,7 +15,7 @@ except:  # incase import does not work
     from Tkinter import *
     from Tkinter import ttk
 
-#SQL
+#csv for leaderboard
 import csv
 
 def insertIntoLog(name, score):
@@ -31,23 +31,6 @@ def validate(P):
         # Anything else, reject it
         return False
 
-
-
-# connection = sqlite3.connect(os.getcwd() + "\\SpaceInv.db") 
-# crsr = connection.cursor()
-
-#create table if it doesn't exist
-# create_command = """CREATE TABLE IF NOT EXISTS HIGHSCORE (  
-# name VARCHAR(20),  
-# score INT(10),    
-# date DATE);"""
-        
-# d_command = "SELECT datetime('now','localtime');"
-# crsr.execute(d_command)
-
-
-# execute the statement 
-# crsr.execute(create_command)
 
 #quotes to display while game loads
 quotes = [
@@ -187,31 +170,38 @@ def user_window_ai(): #second window to input username for AI
     vcmd = (user.register(validate), '%P')
     name_input = Entry(user, width=30, bd=3, insertontime=10, insertofftime=50, highlightthickness=0, validate= "key", validatecommand=vcmd)
     name_input.pack()
-
+    #Classic game mode here:
     def ai_game():
+        #Initialising pygame
         pygame.init()
 
+        #Creating display window
         screen = pygame.display.set_mode((800, 600))
 
+        #Setting caption and icon
         pygame.display.set_caption("Space Invaders - Classic")
         icon = pygame.image.load('ufo.png')
         pygame.display.set_icon(icon)
 
         clock = pygame.time.Clock()
 
+        #Initialising background image
         backgroundImg = pygame.image.load('background.png')
 
+        #Playing game background music on loop
         mixer.music.load('game_music.wav')
         mixer.music.play(-1)
 
         game_state = True
 
+        #Defining parameters for player's spaceship
         playerImg = pygame.image.load('spaceship2.png')
         playerX = 368
         playerY = 480
         playerX_change = 0
         playerRect = pygame.Rect(playerX, playerY, 64, 64)
 
+        #Defining parameters for enemies
         enemyX = []
         enemyY = []
         enemyX_change = []
@@ -220,7 +210,6 @@ def user_window_ai(): #second window to input username for AI
         enemyImg1 = pygame.image.load('enemy1.png')
         enemyImg2 = pygame.image.load('enemy2.png')
         enemy_number = 10
-        enemy_state = 1
         for i in range(enemy_number):
             enemyX.append(random.randint(0, 736))
             enemyY.append(random.randint(50, 150))
@@ -230,6 +219,7 @@ def user_window_ai(): #second window to input username for AI
         movement_state = True
         movement_count = 1
 
+        #Defining parameters for bullets and fire-rate
         bulletImg = pygame.image.load('missile.png')
         bulletX = []
         bulletY = []
@@ -239,6 +229,7 @@ def user_window_ai(): #second window to input username for AI
         fire_delay = 0
         last_fire_delay = -20
 
+        #Defining parameters for explosion effect
         explosionImg = pygame.image.load('explosion1.png')
         explosionX = 0
         explosionY = 0
@@ -246,19 +237,25 @@ def user_window_ai(): #second window to input username for AI
         explosion_count = 13
         collision_sound = mixer.Sound('explosion.wav')
 
+        #Initialsing score
         score_value = 0
+
         score_font = pygame.font.Font('game_over.ttf', 48)
         score_font_over = pygame.font.Font('game_over.ttf', 100)
 
         over_font = pygame.font.Font('game_over.ttf', 200)
         exit_font = pygame.font.Font('game_over.ttf', 48)
 
+
+        #Function to display text when game ends
         def game_over():
             over_object = over_font.render("GAME OVER", True, (128, 0, 0))
             screen.blit(over_object, (160, 200))
             exit_object = exit_font.render("Press ESCAPE key to exit.", True, (255, 255, 255))
             screen.blit(exit_object, (290, 550))
 
+
+        #Function to display score
         def score():
             if game_state:
                 score_object = score_font.render("Score : " + str(score_value), True, (128, 0, 0))
@@ -267,33 +264,41 @@ def user_window_ai(): #second window to input username for AI
                 score_object = score_font_over.render("Score : " + str(score_value), True, (255, 255, 255))
                 screen.blit(score_object, (320, 300))
 
+        #Function to display player spaceship on screen
         def player(x, y):
             screen.blit(playerImg, (x, y))
 
+        #Function to display enemies on screen
         def enemy(x, y, z):
             if z:
                 screen.blit(enemyImg1, (x, y))
             else:
                 screen.blit(enemyImg2, (x, y))
 
+        #Function to be executed when bullet is fired
         def fire_bullet(x, y):
             bulletX.append(x + 24)
             bulletY.append(y - 20)
             bulletRect.append(pygame.Rect(x + 24, y - 20, 16, 16))
 
+        #Function to display bullet on screen
         def bullet(x, y):
             screen.blit(bulletImg, (x, y))
 
+        #Function to display explosion on screen
         def explosion(x, y):
             screen.blit(explosionImg, (x, y))
 
         start_time = time.time()
         end_time = start_time
 
+        #Main loop that runs until the running variable is false
         running = True
         while running:
+            #Function to display background on screen
             screen.blit(backgroundImg, (0, 0))
 
+            #Event loop- checks all inputs by player and executes accordingly
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -316,12 +321,14 @@ def user_window_ai(): #second window to input username for AI
                 fire_delay += 1
                 end_time = time.time()
 
+            # Changing player coordinates based on movement input
             playerX += playerX_change
             if playerX < 0:
                 playerX = 0
             if playerX > 736:
                 playerX = 736
 
+            #Checking if enemy collides with player(Game over) and updating enemy coordinates
             for i in range(enemy_number):
                 if playerRect.colliderect(enemyRect[i]):
                     game_over()
@@ -347,11 +354,13 @@ def user_window_ai(): #second window to input username for AI
 
                 enemy(enemyX[i], enemyY[i], movement_state)
 
+            #Variable to give enemy animation effect that keeps flipping between 2 states
             if movement_count % 16 == 0:
                 movement_state = not movement_state
                 movement_count = 1
             movement_count += 1
 
+            #Checking if bullet hits an enemy(killing it) and updating bullet coordinates
             s = False
             l = len(bulletY)
             i = 0
@@ -394,6 +403,7 @@ def user_window_ai(): #second window to input username for AI
                 bulletX.pop(0)
                 bulletRect.pop(0)
 
+            #Explosion effect lasts for fixed number of frames
             if explosion_frames > explosion_count:
                 explosion(explosionX, explosionY)
             explosion_count += 1
@@ -403,10 +413,14 @@ def user_window_ai(): #second window to input username for AI
 
             score()
 
+            #Updating the display
             pygame.display.update()
 
+            #Limiting game frame rate to 60 for standardisation
             clock.tick(60)
-
+        #End of running loop
+        
+        #Returns the score to be stored in csv
         return score_value
 
     def save_input():
@@ -460,18 +474,23 @@ def user_window_pvp(): #second window to input usernames of players for PVP
     name2_input.pack()
 
     def pvp_game(name_1, name_2):
+        # Initialising pygame
         pygame.init()
 
+        # Creating display window
         screen = pygame.display.set_mode((800, 600))
 
+        # Setting caption and icon
         pygame.display.set_caption("Space Invaders - PvP")
         icon = pygame.image.load('ufo.png')
         pygame.display.set_icon(icon)
 
         clock = pygame.time.Clock()
 
+        # Initialising background image
         backgroundImg = pygame.image.load('background2.png')
 
+        # Playing game background music on loop
         mixer.music.load('game_music.wav')
         mixer.music.play(-1)
 
@@ -482,6 +501,7 @@ def user_window_pvp(): #second window to input usernames of players for PVP
 
         versus_font = pygame.font.Font('game_over.ttf', 80)
 
+        # Defining parameters for player1's spaceship
         player1Name = name_1
         player1Img = pygame.image.load('spaceship2white.png')
         player1Health = 40
@@ -490,6 +510,7 @@ def user_window_pvp(): #second window to input usernames of players for PVP
         player1Y_change = 0
         player1Rect = pygame.Rect(player1X, player1Y, 64, 64)
 
+        # Defining parameters for player2's spaceship
         player2Name = name_2
         player2Img = pygame.image.load('spaceship2black.png')
         player2Health = 40
@@ -498,6 +519,7 @@ def user_window_pvp(): #second window to input usernames of players for PVP
         player2Y_change = 0
         player2Rect = pygame.Rect(player2X, player2Y, 64, 64)
 
+        # Defining parameters for bullets and fire-rate
         bullet_sound = mixer.Sound('shoot.wav')
         bullet1Img = pygame.image.load('bullet1.png')
         bullet1X = []
@@ -520,25 +542,31 @@ def user_window_pvp(): #second window to input usernames of players for PVP
         over_font = pygame.font.Font('game_over.ttf', 120)
         exit_font = pygame.font.Font('game_over.ttf', 48)
 
+        # Function to display player spaceship on screen
         def player(x, y, playerImg):
             screen.blit(playerImg, (x, y))
 
+        # Function to be executed when bullet is fired by player 1
         def fire_bullet1(x, y):
             bullet1X.append(x + 20)
             bullet1Y.append(y + 24)
             bullet1Rect.append(pygame.Rect(x + 20, y + 24, 16, 16))
 
+        # Function to be executed when bullet is fired by player 2
         def fire_bullet2(x, y):
             bullet2X.append(x - 20)
             bullet2Y.append(y + 24)
             bullet2Rect.append(pygame.Rect(x + 24, y + 24, 16, 16))
 
+        # Function to display bullet fired by player 1 on screen
         def bullet1(x, y):
             screen.blit(bullet1Img, (x, y))
 
+        # Function to display bullet fired by player 2 on screen
         def bullet2(x, y):
             screen.blit(bullet2Img, (x, y))
-
+        
+        # Function executed when a player wins(opponent runs out of health). Displays winner name.
         def winner(x):
             if x == player1Name:
                 end_colour = (255, 255, 255)
@@ -550,15 +578,19 @@ def user_window_pvp(): #second window to input usernames of players for PVP
             screen.blit(over_object, center_over_text)
             exit_object = exit_font.render("Press ESCAPE key to exit.", True, (255, 255, 255))
             screen.blit(exit_object, (290, 550))
-
+        
+        # Display the usernames of players in ongoing match
         top_text = player1Name + "  VS  " + player2Name
         top_rect = versus_font.render(top_text, True, (255, 255, 255))
         center_top_text = top_rect.get_rect(center=(400, 20))
 
+        # Main loop that runs until the running variable is false
         running = True
         while running:
+            # Function to display background on screen
             screen.blit(backgroundImg, (0, 0))
 
+            # Event loop- checks all inputs by player and executes accordingly
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -593,11 +625,13 @@ def user_window_pvp(): #second window to input usernames of players for PVP
                         player1Y_change = 0
                     if event.key == pygame.K_w:
                         player1Y_change = 0
-
+            
+            # Update fire-rate counter
             if game_state:
                 fire_delay1 += 1
                 fire_delay2 += 1
 
+            # Changing players coordinates based on movement input
             player1Y += player1Y_change
             player2Y += player2Y_change
             if player1Y < 60:
@@ -611,6 +645,7 @@ def user_window_pvp(): #second window to input usernames of players for PVP
             player1Rect = pygame.Rect(player1X, player1Y, 64, 64)
             player2Rect = pygame.Rect(player2X, player2Y, 64, 64)
 
+            #Update bullet coordinates and check for collision with enemy spaceship(Deducts health)
             l1 = len(bullet1X)
             i1 = 0
             while i1 < l1:
@@ -657,14 +692,17 @@ def user_window_pvp(): #second window to input usernames of players for PVP
                     bullet2Y.pop(0)
                     bullet2Rect.pop(0)
 
+            # Create/Update health bar
             pygame.draw.rect(screen, red, (player1X + 17, player1Y - 10, 40, 5))
             pygame.draw.rect(screen, red, (player2X + 7, player2Y - 10, 40, 5))
             pygame.draw.rect(screen, green, (player1X + 17, player1Y - 10, player1Health, 5))
             pygame.draw.rect(screen, green, (player2X + 7, player2Y - 10, player2Health, 5))
 
+            # Display player spaceships
             player(player1X, player1Y, player1Img)
             player(player2X, player2Y, player2Img)
 
+            # Check if a player has depleted their health, end the game and declare winner
             if game_state:
                 if player1Health < 1:
                     winner_name = player2Name
@@ -677,14 +715,18 @@ def user_window_pvp(): #second window to input usernames of players for PVP
                     fire_delay1 = last_fire_delay1
                     fire_delay2 = last_fire_delay2
 
+            # Once game has been ended, display winner
             if not game_state:
                 winner(winner_name)
 
             screen.blit(top_rect, center_top_text)
 
+            # Updating the display
             pygame.display.update()
 
+            # Limiting game frame rate to 60 for standardisation
             clock.tick(60)
+        #End of running loop
 
     def save_input():
         global name1, name2
@@ -748,17 +790,6 @@ def leaderboard_window():
 
         if i >= 10:
             break
-
-
-    # values = connection.execute('''SELECT * from HIGHSCORE LIMIT 0,10''')
-    # i = 0 # 
-    # for score in values: 
-    #     for j in range(len(score)):
-    #         e = Entry(scores, width=10, fg='blue') 
-    #         e.grid(row=i, column=j) 
-    #         e.insert(END, score[j])
-        # i=i+1
-
 
 
 def PlayGame(): #Game code here
