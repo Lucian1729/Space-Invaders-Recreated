@@ -15,7 +15,7 @@ except:  # incase import does not work
     from Tkinter import *
     from Tkinter import ttk
 
-#csv for leaderboard
+# csv for leaderboard
 import csv
 
 def insertIntoLog(name, score):
@@ -25,14 +25,14 @@ def insertIntoLog(name, score):
 
 def validate(P):
     if len(P) < 15:
-        #14 char or less is fine
+        # 14 char or less is fine
         return True
     else:
         # Anything else, reject it
         return False
 
 
-#quotes to display while game loads
+# quotes to display while game loads
 quotes = [
     '"If you find yourself in a hole, the first thing to do is stop digging."\n - from Red Dead Redemption',
     '"Success is not final, failure is not fatal: \nIt is the courage to continue that counts."\n - from Call of Duty: Modern Warfare',
@@ -50,12 +50,12 @@ quotes = [
     '"Understand that failure is not the opposite of success, it is a part of success.”\n - Arianna Huffington'
         ]
 
-#function for main menu
-def main_menu(): #window for first screen shown to user
+# function for main menu
+def main_menu(): # window for first screen shown to user
     main = Tk()
     main.title("Python Coding Mini-Project")
 
-    #centering
+    # centering window
     main.update_idletasks()
     width = 750
     height = 600
@@ -64,25 +64,27 @@ def main_menu(): #window for first screen shown to user
     main.geometry('{}x{}+{}+{}'.format(width, height, x, y))
 
     main.resizable(0,0)
-        
+    # displaying first label
+
     try:
         label1 = Label(text="Welcome to Space Invaders!", font=("Century Gothic", 35), fg="black")
     except:
-        label1 = Label(text="Welcome to Space Invaders!", font=("Arial", 35), fg="black")
+        label1 = Label(text="Welcome to Space Invaders!", font=("Arial", 35), fg="black") #incase font is not downloaded
     label1.pack(pady=30)
 
-    def play_command_ai(): #destroys window and runs game
+    def play_command_ai(): # destroys window and runs game
         global decision
         decision = "AI"
         main.destroy()
         PlayGame()
     
-    def play_command_pvp(): #destroys window and runs game
+    def play_command_pvp(): # destroys window and runs game
         global decision
         decision = "PVP"
         main.destroy()
         PlayGame()
 
+    # buttons showing choices 
 
     button_play_ai = Button(main, text="Classic", font=("Arial", 25), width = 17, command=play_command_ai)
     button_play_ai.pack(pady=20)
@@ -98,16 +100,15 @@ def main_menu(): #window for first screen shown to user
 
     main.mainloop()
 
-def loading_window(): #loading screen
+def loading_window(): # loading screen
     master = Tk()
     master.title("Space Invaders")
-    master.attributes("-alpha", 0.0) #making window transparent before GUI loads
+    master.attributes("-alpha", 0.0) # making window transparent before GUI loads
     master.after(0, master.attributes, "-alpha", 1.0)
     master.attributes("-topmost", True)
-    #master.configure(bg="#000e20")
     master.overrideredirect(True)
 
-    #position in centre
+    # position in centre
     master.update_idletasks()
     width = 750
     height = 600
@@ -117,22 +118,22 @@ def loading_window(): #loading screen
 
     master.resizable(0,0)
 
-    #progress text
+    # progress text
     try: 
         progress_mainLabel = Label(master, text="Loading...", font=("Century Gothic", 40), fg="black", bd=0)
     except: 
-        progress_mainLabel = Label(master, text="Loading...", font=("Arial", 40), fg="black", bd=0)
+        progress_mainLabel = Label(master, text="Loading...", font=("Arial", 40), fg="black", bd=0) # if font not downloaded
     progress_mainLabel.pack(pady=(100,10))
     quoteLabel = Label(master, text=random.choice(quotes), font=("Century Gothic", 15), fg="black", justify="center")
     quoteLabel.pack(pady=50)
     
-    # defining func for progress bar
+    # defining function for progress bar
     
     def ProgressFunction(progress_current):
         try:
             progress_Progressbar["value"] = progress_current
         except:
-            pass
+            pass # code would give error if exited abruptly for no reason
         
     progress_max = 200
     progress_current = 0
@@ -150,11 +151,11 @@ def loading_window(): #loading screen
     master.destroy()
     master.mainloop()
 
-def user_window_ai(): #second window to input username for AI
+def user_window_ai(): # second window to input username for AI
     user = Tk()
     user.title("Classic")
 
-    #centering
+    # centering
     user.update_idletasks()
     width = 750
     height = 600
@@ -170,38 +171,38 @@ def user_window_ai(): #second window to input username for AI
     vcmd = (user.register(validate), '%P')
     name_input = Entry(user, width=30, bd=3, insertontime=10, insertofftime=50, highlightthickness=0, validate= "key", validatecommand=vcmd)
     name_input.pack()
-    #Classic game mode here:
+    # Classic game mode here:
     def ai_game():
-        #Initialising pygame
+        # Initialising pygame
         pygame.init()
 
-        #Creating display window
+        # Creating display window
         screen = pygame.display.set_mode((800, 600))
 
-        #Setting caption and icon
+        # Setting caption and icon
         pygame.display.set_caption("Space Invaders - Classic")
         icon = pygame.image.load('ufo.png')
         pygame.display.set_icon(icon)
 
         clock = pygame.time.Clock()
 
-        #Initialising background image
+        # Initialising background image
         backgroundImg = pygame.image.load('background.png')
 
-        #Playing game background music on loop
+        # Playing game background music on loop
         mixer.music.load('game_music.wav')
         mixer.music.play(-1)
 
         game_state = True
 
-        #Defining parameters for player's spaceship
+        # Defining parameters for player's spaceship
         playerImg = pygame.image.load('spaceship2.png')
         playerX = 368
         playerY = 480
         playerX_change = 0
         playerRect = pygame.Rect(playerX, playerY, 64, 64)
 
-        #Defining parameters for enemies
+        # Defining parameters for enemies
         enemyX = []
         enemyY = []
         enemyX_change = []
@@ -219,7 +220,7 @@ def user_window_ai(): #second window to input username for AI
         movement_state = True
         movement_count = 1
 
-        #Defining parameters for bullets and fire-rate
+        # Defining parameters for bullets and fire-rate
         bulletImg = pygame.image.load('missile.png')
         bulletX = []
         bulletY = []
@@ -229,7 +230,7 @@ def user_window_ai(): #second window to input username for AI
         fire_delay = 0
         last_fire_delay = -20
 
-        #Defining parameters for explosion effect
+        # Defining parameters for explosion effect
         explosionImg = pygame.image.load('explosion1.png')
         explosionX = 0
         explosionY = 0
@@ -237,7 +238,7 @@ def user_window_ai(): #second window to input username for AI
         explosion_count = 13
         collision_sound = mixer.Sound('explosion.wav')
 
-        #Initialsing score
+        # Initialsing score
         score_value = 0
 
         score_font = pygame.font.Font('game_over.ttf', 48)
@@ -247,7 +248,7 @@ def user_window_ai(): #second window to input username for AI
         exit_font = pygame.font.Font('game_over.ttf', 48)
 
 
-        #Function to display text when game ends
+        # Function to display text when game ends
         def game_over():
             over_object = over_font.render("GAME OVER", True, (128, 0, 0))
             screen.blit(over_object, (160, 200))
@@ -255,7 +256,7 @@ def user_window_ai(): #second window to input username for AI
             screen.blit(exit_object, (290, 550))
 
 
-        #Function to display score
+        # Function to display score
         def score():
             if game_state:
                 score_object = score_font.render("Score : " + str(score_value), True, (128, 0, 0))
@@ -264,41 +265,41 @@ def user_window_ai(): #second window to input username for AI
                 score_object = score_font_over.render("Score : " + str(score_value), True, (255, 255, 255))
                 screen.blit(score_object, (320, 300))
 
-        #Function to display player spaceship on screen
+        # Function to display player spaceship on screen
         def player(x, y):
             screen.blit(playerImg, (x, y))
 
-        #Function to display enemies on screen
+        # Function to display enemies on screen
         def enemy(x, y, z):
             if z:
                 screen.blit(enemyImg1, (x, y))
             else:
                 screen.blit(enemyImg2, (x, y))
 
-        #Function to be executed when bullet is fired
+        # Function to be executed when bullet is fired
         def fire_bullet(x, y):
             bulletX.append(x + 24)
             bulletY.append(y - 20)
             bulletRect.append(pygame.Rect(x + 24, y - 20, 16, 16))
 
-        #Function to display bullet on screen
+        # Function to display bullet on screen
         def bullet(x, y):
             screen.blit(bulletImg, (x, y))
 
-        #Function to display explosion on screen
+        # Function to display explosion on screen
         def explosion(x, y):
             screen.blit(explosionImg, (x, y))
 
         start_time = time.time()
         end_time = start_time
 
-        #Main loop that runs until the running variable is false
+        # Main loop that runs until the running variable is false
         running = True
         while running:
-            #Function to display background on screen
+            # Function to display background on screen
             screen.blit(backgroundImg, (0, 0))
 
-            #Event loop- checks all inputs by player and executes accordingly
+            # Event loop- checks all inputs by player and executes accordingly
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -328,7 +329,7 @@ def user_window_ai(): #second window to input username for AI
             if playerX > 736:
                 playerX = 736
 
-            #Checking if enemy collides with player(Game over) and updating enemy coordinates
+            # Checking if enemy collides with player(Game over) and updating enemy coordinates
             for i in range(enemy_number):
                 if playerRect.colliderect(enemyRect[i]):
                     game_over()
@@ -354,13 +355,13 @@ def user_window_ai(): #second window to input username for AI
 
                 enemy(enemyX[i], enemyY[i], movement_state)
 
-            #Variable to give enemy animation effect that keeps flipping between 2 states
+            # Variable to give enemy animation effect that keeps flipping between 2 states
             if movement_count % 16 == 0:
                 movement_state = not movement_state
                 movement_count = 1
             movement_count += 1
 
-            #Checking if bullet hits an enemy(killing it) and updating bullet coordinates
+            # Checking if bullet hits an enemy(killing it) and updating bullet coordinates
             s = False
             l = len(bulletY)
             i = 0
@@ -403,7 +404,7 @@ def user_window_ai(): #second window to input username for AI
                 bulletX.pop(0)
                 bulletRect.pop(0)
 
-            #Explosion effect lasts for fixed number of frames
+            # Explosion effect lasts for fixed number of frames
             if explosion_frames > explosion_count:
                 explosion(explosionX, explosionY)
             explosion_count += 1
@@ -413,17 +414,17 @@ def user_window_ai(): #second window to input username for AI
 
             score()
 
-            #Updating the display
+            # Updating the display
             pygame.display.update()
 
-            #Limiting game frame rate to 60 for standardisation
+            # Limiting game frame rate to 60 for standardisation
             clock.tick(60)
-        #End of running loop
+        # End of running loop
         
-        #Returns the score to be stored in csv
+        # Returns the score to be stored in csv
         return score_value
 
-    def save_input():
+    def save_input(): # function to save the name of the user
         game_name = name_input.get()
           
         display_name_label = Label(user, text="Welcome {}! Click below to start playing.".format(game_name), font=("Arial", 15))
@@ -432,24 +433,25 @@ def user_window_ai(): #second window to input username for AI
         def play_command():
             user.destroy()
             game_score = ai_game()
-            insertIntoLog(game_name, game_score)
+            insertIntoLog(game_name, game_score) # adds highscore to log
 
 
         button_play = Button(user, text="Play Now", font=("Arial", 25), command=play_command)
         button_play.pack(pady=20)
 
         controls_label = Label(user, text="Controls: →/← to move right/left, space to shoot.", font=("Arial", 15))
-        controls_label.pack()
+        controls_label.pack() # displays description of controls on screen
     
+     
     save_button = Button(user, text="Save", font=("Arial", 15), command=save_input)
-    save_button.pack(pady=15)
+    save_button.pack(pady=15) 
     
-def user_window_pvp(): #second window to input usernames of players for PVP
+def user_window_pvp(): # second window to input usernames of players for PVP
 
     user = Tk()
     user.title("Player vs Player (1v1)")
 
-    #centering
+    # centering
     user.update_idletasks()
     width = 750
     height = 600
@@ -645,7 +647,7 @@ def user_window_pvp(): #second window to input usernames of players for PVP
             player1Rect = pygame.Rect(player1X, player1Y, 64, 64)
             player2Rect = pygame.Rect(player2X, player2Y, 64, 64)
 
-            #Update bullet coordinates and check for collision with enemy spaceship(Deducts health)
+            # Update bullet coordinates and check for collision with enemy spaceship(Deducts health)
             l1 = len(bullet1X)
             i1 = 0
             while i1 < l1:
@@ -726,9 +728,9 @@ def user_window_pvp(): #second window to input usernames of players for PVP
 
             # Limiting game frame rate to 60 for standardisation
             clock.tick(60)
-        #End of running loop
+        # End of running loop
 
-    def save_input():
+    def save_input(): # window to save names of user 1 and 2 for PVP game mode
         global name1, name2
         name1 = name1_input.get()
         name2 = name2_input.get()
@@ -739,7 +741,7 @@ def user_window_pvp(): #second window to input usernames of players for PVP
 
         def play_command():
             user.destroy()
-            pvp_game(name1, name2)
+            pvp_game(name1, name2) # runs code for pvp game
 
         
         button_play = Button(user, text="Play Now!", font=("Arial", 25), width = 20, command=play_command)
@@ -752,11 +754,11 @@ def user_window_pvp(): #second window to input usernames of players for PVP
     save_button = Button(user, text="Save", font=("Arial", 15), command=save_input)
     save_button.pack(pady=15)
 
-def leaderboard_window():
+def leaderboard_window(): # window to display leaderboard
     scores = Tk()
     scores.title("Highscores")
 
-    #centering
+    # centering
     scores.update_idletasks()
     width = 750
     height = 600
@@ -766,13 +768,13 @@ def leaderboard_window():
 
     scores.resizable(0,0)
 
-    #displaying the highscores:
-    file = open("scores.csv", "r")
-    reader = csv.reader(file)
+    # displaying the highscores:
+    file = open("scores.csv", "r") # opening file to be read from
+    reader = csv.reader(file) # initialising csv reader object
     
     rows = []
 
-    for row in reader:
+    for row in reader: # adding entries to a list so it can be sorted
         if len(row)==2:
             rows.append(row)
 
@@ -792,12 +794,13 @@ def leaderboard_window():
             break
 
 
-def PlayGame(): #Game code here
-    loading_window()
-    if decision == "AI":
+def PlayGame(): # runs program
+    loading_window() 
+    if decision == "AI": # opening appropriate window based on user response
         user_window_ai()
     else:
         user_window_pvp()
 
+main_menu() # runs the initial main menu
 
-main_menu()
+#############################################################################################################################
