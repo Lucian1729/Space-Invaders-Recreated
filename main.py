@@ -24,8 +24,8 @@ def insertIntoLog(name, score):
     writer.writerow([name, score])
 
 def validate(P):
-    if len(P) < 15 and len(P) > 0:
-        #15 char is fine, non empty
+    if len(P) < 15:
+        #14 char or less is fine
         return True
     else:
         # Anything else, reject it
@@ -423,6 +423,9 @@ def user_window_ai(): #second window to input username for AI
 
         button_play = Button(user, text="Play Now", font=("Arial", 25), command=play_command)
         button_play.pack(pady=20)
+
+        controls_label = Label(user, text="Controls: →/← to move right/left, space to shoot.", font=("Arial", 15))
+        controls_label.pack()
     
     save_button = Button(user, text="Save", font=("Arial", 15), command=save_input)
     save_button.pack(pady=15)
@@ -455,7 +458,6 @@ def user_window_pvp(): #second window to input usernames of players for PVP
     vcmd = (user.register(validate), '%P')
     name2_input = Entry(user, width=30, bd=3, insertontime=10, insertofftime=50, highlightthickness=0, validate="key", validatecommand=vcmd)
     name2_input.pack()
-
 
     def pvp_game(name_1, name_2):
         pygame.init()
@@ -700,6 +702,10 @@ def user_window_pvp(): #second window to input usernames of players for PVP
         
         button_play = Button(user, text="Play Now!", font=("Arial", 25), width = 20, command=play_command)
         button_play.pack(pady=10)
+
+        controls_label = Label(user, text="Controls:\nUser 1: W/S to move up and down, D to shoot.\nUser 2: ↕ (Arrow keys) to move up and down, ← to shoot.", font=("Arial", 15))
+        controls_label.pack()
+        
     
     save_button = Button(user, text="Save", font=("Arial", 15), command=save_input)
     save_button.pack(pady=15)
