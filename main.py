@@ -1,6 +1,6 @@
 #Python for Computational Problem Solving: Mini Project
-#GUI: Coded by Nimit Mann(SRN: PES1202100653)
-#Game mechanics, effects and animations: Coded by Nischal H S(SRN: PES1202100756)
+#GUI: Coded by Nimit Mann
+#Game mechanics, effects and animations: Coded by Nischal H S
 
 
 import pygame
